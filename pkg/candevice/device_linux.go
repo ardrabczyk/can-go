@@ -41,8 +41,17 @@ type Device struct {
 	ifi    ifInfoMsg
 }
 
+type CanDevice interface {
+	IsUp() (bool, error)
+	SetUp() error
+	SetDown() error
+	Bitrate() (uint32, error)
+	SetBitrate(bitrate uint32) error
+	Info() (Info, error)
+}
+
 // Creates a handle to a CAN device specified by name, e.g. can0.
-func New(deviceName string) (*Device, error) {
+func New(deviceName string) (CanDevice, error) {
 	iface, err := net.InterfaceByName(deviceName)
 	if err != nil {
 		return nil, err
